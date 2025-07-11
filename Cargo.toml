@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/crypto",
+    "crates/protocol",
+    "crates/server",
+    "crates/client",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Yash Sharma <iamyxsh@icloud.com>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/iamyxsh/hybrid-kyber-communication-channel"
+[workspace.dependencies]
+pqcrypto-kyber = "0.8"
+pqcrypto-traits = "0.3"
+x25519-dalek = { version = "2", features = ["static_secrets"] }
+chacha20poly1305 = "0.10"
+aes-gcm = "0.10"
+sha2 = "0.10"
+hkdf = "0.12"
+rand = "0.8"
+zeroize = { version = "1", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+bincode = "1"
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+thiserror = "2"
+crypto = { path = "crates/crypto", package = "hybrid-kyber-crypto" }
+protocol = { path = "crates/protocol", package = "hybrid-kyber-protocol" }

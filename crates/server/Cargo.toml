@@ -1,0 +1,13 @@
+[package]
+name = "hybrid-kyber-server"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+crypto.workspace = true
+protocol.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true
+clap.workspace = true
