@@ -13,6 +13,7 @@ edition = "2024"
 authors = ["Yash Sharma <iamyxsh@icloud.com>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/iamyxsh/hybrid-kyber-communication-channel"
+
 [workspace.dependencies]
 pqcrypto-kyber = "0.8"
 pqcrypto-traits = "0.3"

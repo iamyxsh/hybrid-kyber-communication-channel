@@ -13,3 +13,18 @@ pub trait Kem {
     /// Decapsulate a ciphertext using a secret key
     fn decapsulate(sk: &Self::SecretKey, ct: &Self::Ciphertext) -> Self::SharedSecret;
 }
+
+pub trait Dh {
+    type SecretKey;
+    type PublicKey;
+    type SharedSecret;
+
+    /// Generate a new keypair
+    fn generate_keypair() -> (Self::PublicKey, Self::SecretKey);
+
+    /// Derive the public key from a secret key
+    fn public_key(sk: &Self::SecretKey) -> Self::PublicKey;
+
+    /// Perform a Diffie-Hellman exchange
+    fn diffie_hellman(sk: &Self::SecretKey, pk: &Self::PublicKey) -> Self::SharedSecret;
+}
