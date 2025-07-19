@@ -5,6 +5,8 @@ use x25519_dalek::{PublicKey, StaticSecret};
 
 use crate::traits::Kem;
 
+const HKDF_INFO: &[u8] = b"x25519-kem";
+
 pub struct X25519Kem;
 
 impl Kem for X25519Kem {
@@ -26,7 +28,7 @@ impl Kem for X25519Kem {
 
         let mut okm = vec![0u8; 32];
         let hk = Hkdf::<Sha256>::new(None, dh.as_bytes());
-        hk.expand(b"x25519-kem", &mut okm)
+        hk.expand(HKDF_INFO, &mut okm)
             .expect("valid output length");
 
         (eph_pk.to_bytes(), okm)
@@ -38,7 +40,7 @@ impl Kem for X25519Kem {
 
         let mut okm = vec![0u8; 32];
         let hk = Hkdf::<Sha256>::new(None, dh.as_bytes());
-        hk.expand(b"x25519-kem", &mut okm)
+        hk.expand(HKDF_INFO, &mut okm)
             .expect("valid output length");
 
         okm
