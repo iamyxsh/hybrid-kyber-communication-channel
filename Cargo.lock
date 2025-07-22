@@ -501,12 +501,15 @@ dependencies = [
  "bincode",
  "hybrid-kyber-crypto",
  "postcard",
+ "pqcrypto-kyber",
+ "pqcrypto-traits",
  "rand",
  "serde",
  "sha2",
  "thiserror",
  "tokio",
  "tracing",
+ "x25519-dalek",
  "zeroize",
 ]
 
