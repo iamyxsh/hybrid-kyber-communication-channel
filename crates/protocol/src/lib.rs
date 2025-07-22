@@ -1,3 +1,2 @@
-pub fn init() {
-    // TODO: handshake + session logic
-}
+pub mod messages;
+pub mod transcript;

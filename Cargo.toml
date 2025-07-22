@@ -26,6 +26,7 @@ rand = "0.8"
 zeroize = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 bincode = "1"
+postcard = { version = "1", features = ["alloc"] }
 tokio = { version = "1", features = ["full"] }
 clap = { version = "4", features = ["derive"] }
 tracing = "0.1"
