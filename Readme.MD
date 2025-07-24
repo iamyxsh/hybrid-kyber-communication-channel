@@ -17,14 +17,14 @@ Kyber768 provides IND-CCA2 security against quantum adversaries under the Module
            │                                                     │
            │  Generate:                                          │
            │  ├─ (kyber_pk, kyber_sk) ← Kyber768.KeyGen()        │
-           │  └─ (x25519_pk, x25519_sk) ← X25519.KeyGen()       │
+           │  └─ (x25519_pk, x25519_sk) ← X25519.KeyGen()        │
            │                                                     │
            │              ┌─────────────────────┐                │
-           │              │     ClientHello      │                │
+           │              │     ClientHello      │               │
            │              ├─────────────────────┤                │
-           │              │ version: u8          │                │
-           │              │ kyber_pk:  1184 B    │                │
-           │              │ x25519_pk:   32 B    │                │
+           │              │ version: u8          │               │
+           │              │ kyber_pk:  1184 B    │               │
+           │              │ x25519_pk:   32 B    │               │
            │              └─────────────────────┘                │
            │ ──────────────────────────────────────────────────► │
            │                                                     │
@@ -34,14 +34,14 @@ Kyber768 provides IND-CCA2 security against quantum adversaries under the Module
            │                            └─► ss_classical         │
            │                                                     │
            │              ┌─────────────────────┐                │
-           │              │     ServerHello      │                │
+           │              │     ServerHello      │               │
            │              ├─────────────────────┤                │
-           │              │ kyber_ct:  1088 B    │                │
-           │              │ x25519_pk:   32 B    │                │
+           │              │ kyber_ct:  1088 B    │               │
+           │              │ x25519_pk:   32 B    │               │
            │              └─────────────────────┘                │
            │ ◄────────────────────────────────────────────────── │
            │                                                     │
-           │  Decapsulate(kyber_ct, kyber_sk)                     │
+           │  Decapsulate(kyber_ct, kyber_sk)                    │
            │    └─► ss_pq                                        │
            │  DH(x25519_sk, x25519_pk)                           │
            │    └─► ss_classical                                 │
@@ -50,22 +50,22 @@ Kyber768 provides IND-CCA2 security against quantum adversaries under the Module
            │            Both sides derive keys:                  │
            │                                                     │
            │   transcript = SHA-256(ClientHello ‖ ServerHello)   │
-           │   IKM = ss_pq ‖ ss_classical                       │
+           │   IKM = ss_pq ‖ ss_classical                        │
            │                                                     │
-           │   HKDF-SHA256(salt=transcript, ikm=IKM,            │
-           │               info="hybrid-pq-channel-v1")         │
-           │     ├─► k_c2s         (32 B)  client→server key    │
-           │     ├─► k_s2c         (32 B)  server→client key    │
-           │     ├─► nonce_base_c2s (12 B)                      │
-           │     └─► nonce_base_s2c (12 B)                      │
+           │   HKDF-SHA256(salt=transcript, ikm=IKM,             │
+           │               info="hybrid-pq-channel-v1")          │
+           │     ├─► k_c2s         (32 B)  client→server key     │
+           │     ├─► k_s2c         (32 B)  server→client key     │
+           │     ├─► nonce_base_c2s (12 B)                       │
+           │     └─► nonce_base_s2c (12 B)                       │
            │                                                     │
   ═════════╪═════════════════════════════════════════════════════╪══════════
            │                                                     │
            │              ┌─────────────────────┐                │
-           │              │  AppData (repeated)  │                │
+           │              │  AppData (repeated)  │               │
            │              ├─────────────────────┤                │
-           │              │ seq: u64             │                │
-           │              │ ciphertext: Vec<u8>  │                │
+           │              │ seq: u64             │               │
+           │              │ ciphertext: Vec<u8>  │               │
            │              └─────────────────────┘                │
            │ ◄────────────────────────────────────────────────── │
            │ ──────────────────────────────────────────────────► │
@@ -104,16 +104,6 @@ Additional authenticated data (AAD) for each message: `seq (8B) ‖ transcript (
 
 This binds every ciphertext to its position in the stream and to the specific handshake that established the session — preventing replay, reordering, and cross-session splicing.
 
-### Wire Protocol
-
-Length-prefixed framing over TCP:
-
-```
-┌─────────────────┬─────────────────────────┐
-│  length: u32    │  payload: [u8; length]  │
-│  (4 bytes, BE)  │                         │
-└─────────────────┴─────────────────────────┘
-```
 
 Max frame size: 1 MB.
 
@@ -136,18 +126,6 @@ crates/
 ├── server/          TCP server binary
 └── client/          TCP client binary
 ```
-
-## Dependencies
-
-| Crate | Purpose |
-|---|---|
-| `pqcrypto-kyber` | CRYSTALS-Kyber768 (ML-KEM-768) KEM |
-| `x25519-dalek` | X25519 Diffie-Hellman |
-| `chacha20poly1305` | ChaCha20-Poly1305 AEAD |
-| `sha2` | SHA-256 for transcript hashing |
-| `hkdf` | HKDF-SHA256 key derivation |
-| `postcard` | Compact binary serialization |
-| `tokio` | Async TCP runtime |
 
 ## Usage
 
@@ -177,11 +155,3 @@ cargo test
 | Key sizes | 32 bytes per direction |
 | Nonce construction | XOR(base, sequence number) |
 | Replay protection | Monotonic sequence counter |
-
-## References
-
-- [FIPS 203 — Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM)](https://csrc.nist.gov/pubs/fips/203/final)
-- [NIST SP 800-227 — Recommendations for Key-Encapsulation Mechanisms](https://csrc.nist.gov/pubs/sp/800/227/final)
-- [RFC 7748 — Elliptic Curves for Security (X25519)](https://www.rfc-editor.org/rfc/rfc7748)
-- [RFC 8439 — ChaCha20 and Poly1305](https://www.rfc-editor.org/rfc/rfc8439)
-- [RFC 5869 — HKDF](https://www.rfc-editor.org/rfc/rfc5869)
